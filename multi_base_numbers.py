@@ -148,9 +148,12 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     like -99 - 1 = -100 where the list of bases may be [10, 10],
     this function will not try to correct the carry or the -1 in the example
     """
+
+    # remove leading zeros
     if a_list[0] == 0:
         a_list = _remove_leading_element(a_list)
 
+    # check if it's a negative number and correctly format it
     for x in a_list:
         if x > 0:
             break
@@ -167,7 +170,7 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
                 value *= -1
                 carry = -(value // base)
             else:
-                carry = value // base # floor division
+                carry = value // base
             
             if x < len(a_list) - 1:
                 a_list[x + 1] += carry
@@ -180,7 +183,7 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     a_list.reverse()
     base_list.reverse()
 
-    # removing leading zeros that may show up
+    # removing leading zeros
     if a_list[0] == 0:
         a_list = _remove_leading_element(a_list)
 
