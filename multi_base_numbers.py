@@ -1,17 +1,17 @@
-def _pad_left(arr, padding_element, length):
-    for _ in range(length - len(arr)):
-        arr.insert(0, padding_element)
+def _pad_left(a_list, padding_element, length):
+    for _ in range(length - len(a_list)):
+        a_list.insert(0, padding_element)
 
 
-def _remove_leading_element(arr):
-    if arr:
-        while arr[0] == 0:
-            del arr[0]
+def _remove_leading_element(a_list):
+    if a_list:
+        while a_list[0] == 0:
+            del a_list[0]
 
-            if not arr:
-                arr = [0]
+            if not a_list:
+                a_list = [0]
                 break
-    return arr
+    return a_list
 
 
 def _compare_numbers_represented_as_arrays(list_1, list_2):
@@ -77,29 +77,33 @@ def _formate_numbers(num_list_1, num_list_2):
     _make_lists_equal_length(num_list_1, num_list_2, False)
 
 
-def add(num_arr_1, num_arr_2, base_arr):
+def add(num_list_1, num_list_2, base_list):
     """
-    num_arr_1 + num_arr_2
+    num_list_1 + num_list_2
+
+    base_list is a list of the bases of the 2 numbers this function is supposed to work with
     """
     
-    _formate_numbers(num_arr_1, num_arr_2)
+    _formate_numbers(num_list_1, num_list_2)
     
-    return clean_up_bases([x + y for x, y in zip(num_arr_1, num_arr_2)], base_arr)
+    return clean_up_bases([x + y for x, y in zip(num_list_1, num_list_2)], base_list)
 
 
-def subtract(num_arr_1, num_arr_2, base_arr):
+def subtract(num_list_1, num_list_2, base_list):
     """
-    num_arr_1 - num_arr_2
+    num_list_1 - num_list_2
+
+    base_list is a list of the bases of the 2 numbers this function is supposed to work with
     """
 
-    _formate_numbers(num_arr_1, num_arr_2)
+    _formate_numbers(num_list_1, num_list_2)
 
-    negative_flag = _compare_numbers_represented_as_arrays(num_arr_1, num_arr_2)
+    negative_flag = _compare_numbers_represented_as_arrays(num_list_1, num_list_2)
 
     if negative_flag == -1:
-        num_arr_1, num_arr_2 = num_arr_2, num_arr_1
+        num_list_1, num_list_2 = num_list_2, num_list_1
 
-    result = clean_up_bases([x - y for x, y in zip(num_arr_1, num_arr_2)], base_arr)
+    result = clean_up_bases([x - y for x, y in zip(num_list_1, num_list_2)], base_list)
 
     if negative_flag == -1 and result[0] > 0:
         result[0] *= -1
@@ -107,42 +111,56 @@ def subtract(num_arr_1, num_arr_2, base_arr):
     return result
 
 
-def clean_up_bases(arr, base_arr):
-    arr = clean_up_bases_ignore_most_significant_digit(arr, base_arr)
+def clean_up_bases(a_list, base_list):
+    """
+    this "cleans up" the result of the addition or subtraction to give the right asnwer to the operation
+
+    since there is a chance the list of bases is not long enough to include a base for the carry,
+    like -99 - 1 = -100 where the list of bases may be [10, 10],
+    this function tries to correct the carry by extending the list of bases using the most significant base
+    """
+    a_list = clean_up_bases_ignore_most_significant_digit(a_list, base_list)
 
     # test for length
-    # this deals with the most significant digit if it is greater than or euqal to or less than or equal to the negative of the base
+    # this deals with the most significant digit if the positive or negative value of it is greater than or euqal to the base
     
-    if len(arr) > len(base_arr):
-        while arr[0] >= base_arr[0] or -arr[0] >= base_arr[0]:
+    if len(a_list) > len(base_list):
+        while a_list[0] >= base_list[0] or -a_list[0] >= base_list[0]:
             carry = 0
 
-            if -arr[0] >= base_arr[0]:
-                arr[0] *= -1
-                carry = -(arr[0] // base_arr[0])
+            if -a_list[0] >= base_list[0]:
+                a_list[0] *= -1
+                carry = -(a_list[0] // base_list[0])
             else:
-                carry = arr[0] // base_arr[0]
+                carry = a_list[0] // base_list[0]
             
-            arr.insert(0, carry)
-            arr[1] = arr[1] % base_arr[0]
+            a_list.insert(0, carry)
+            a_list[1] = a_list[1] % base_list[0]
 
-    return arr
+    return a_list
 
 
-def clean_up_bases_ignore_most_significant_digit(arr, base_arr):
-    if arr[0] == 0:
-        arr = _remove_leading_element(arr)
+def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
+    """
+    this "cleans up" the result of the addition or subtraction to give the right asnwer to the operation
 
-    for x in arr:
+    since there is a chance the list of bases is not long enough to include a base for the carry,
+    like -99 - 1 = -100 where the list of bases may be [10, 10],
+    this function will not try to correct the carry or the -1 in the example
+    """
+    if a_list[0] == 0:
+        a_list = _remove_leading_element(a_list)
+
+    for x in a_list:
         if x > 0:
             break
     else:
-        arr = _format_into_regular_negative_number(arr)
+        a_list = _format_into_regular_negative_number(a_list)
 
-    arr.reverse()
-    base_arr.reverse()
+    a_list.reverse()
+    base_list.reverse()
 
-    for x, (value, base) in enumerate(zip(arr, base_arr)):
+    for x, (value, base) in enumerate(zip(a_list, base_list)):
         if value >= base or value < 0:
             carry = 0
             if -value >= base:
@@ -151,19 +169,19 @@ def clean_up_bases_ignore_most_significant_digit(arr, base_arr):
             else:
                 carry = value // base # floor division
             
-            if x < len(arr) - 1:
-                arr[x + 1] += carry
+            if x < len(a_list) - 1:
+                a_list[x + 1] += carry
             else:
                 if value < base:
                     break
-                arr.append(carry)
-            arr[x] = value % base
+                a_list.append(carry)
+            a_list[x] = value % base
 
-    arr.reverse()
-    base_arr.reverse()
+    a_list.reverse()
+    base_list.reverse()
 
     # removing leading zeros that may show up
-    if arr[0] == 0:
-        arr = _remove_leading_element(arr)
+    if a_list[0] == 0:
+        a_list = _remove_leading_element(a_list)
 
-    return arr
+    return a_list
