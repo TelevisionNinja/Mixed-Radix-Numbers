@@ -2,6 +2,7 @@ def _pad_left(a_list, length):
     """
     pad zeros to the left of a list
     """
+
     for _ in range(length - len(a_list)):
         a_list.insert(0, 0)
     return a_list
@@ -14,7 +15,7 @@ def _remove_leading_element(a_list):
         if not a_list:
             a_list = [0]
             break
-    
+
     return a_list
 
 
@@ -56,21 +57,20 @@ def _make_whole_list_negative(a_list):
     return a_list
 
 
-def _format_into_regular_negative(a_list):
+def _make_whole_list_positive(a_list):
     for x, value in enumerate(a_list):
         if value < 0:
             a_list[x] *= -1
-    a_list[0] *= -1
     return a_list
 
 
 def _check_if_negative(a_list):
     for x in a_list:
         if x > 0:
-            break
+            return False
     else:
-        a_list = _format_into_regular_negative(a_list)
-    return a_list
+        a_list = _make_whole_list_positive(a_list)
+    return True
 
 
 def _check_if_regular_negative(a_list):
@@ -82,7 +82,7 @@ def _check_if_regular_negative(a_list):
 def _format_numbers(num_list_1, num_list_2):
     num_list_1 = _check_if_regular_negative(num_list_1)
     num_list_2 = _check_if_regular_negative(num_list_2)
-    
+
     _make_lists_equal_length(num_list_1, num_list_2)
 
 
@@ -93,9 +93,9 @@ def add(num_list_1, num_list_2, base_list):
     base_list is a list of the bases of the 2 numbers this function is supposed to work with
     It must be greater than or equal to the length of the two number lists
     """
-    
+
     _format_numbers(num_list_1, num_list_2)
-    
+
     return clean_up_bases([x + y for x, y in zip(num_list_1, num_list_2)], base_list)
 
 
@@ -136,7 +136,7 @@ def clean_up_bases(a_list, base_list):
 
     # test for length
     # this deals with the most significant digit if the positive or negative value of it is greater than or euqal to the base
-    
+
     if len(a_list) > len(base_list):
         while abs(a_list[0]) >= base_list[0]:
             carry = 0
@@ -146,7 +146,7 @@ def clean_up_bases(a_list, base_list):
                 carry = -(a_list[0] // base_list[0])
             else:
                 carry = a_list[0] // base_list[0]
-            
+
             a_list.insert(0, carry)
             a_list[1] = a_list[1] % base_list[0]
 
@@ -169,7 +169,7 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
         a_list = _remove_leading_element(a_list)
 
     # check if it's a negative number and correctly format it
-    _check_if_negative(a_list)
+    negative_flag = _check_if_negative(a_list)
 
     a_list.reverse()
     base_list.reverse()
@@ -183,15 +183,15 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
                 carry = -(value // base)
             else:
                 carry = value // base
-            
+
             if x < len(a_list) - 1:
                 a_list[x + 1] += carry
             else:
                 if value < base:
                     break
-                
+
                 a_list.append(carry)
-            
+
             a_list[x] = value % base
 
     a_list.reverse()
@@ -200,6 +200,9 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     # removing leading zeros
     if a_list[0] == 0:
         a_list = _remove_leading_element(a_list)
+
+    if negative_flag:
+        a_list[0] *= -1
 
     return a_list
 
