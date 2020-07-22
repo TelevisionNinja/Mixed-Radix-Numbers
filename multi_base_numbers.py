@@ -3,9 +3,9 @@ def _pad_left(a_list, length):
     pad zeros to the left of a list
     """
 
-    for _ in range(length - len(a_list)):
-        a_list.insert(0, 0)
-    return a_list
+    new_list = [0 for _ in range(length - len(a_list))]
+    new_list += a_list
+    return new_list
 
 
 def _remove_leading_element(a_list):
@@ -39,35 +39,14 @@ def _compare_numbers_represented_as_arrays(list_1, list_2):
     return 0
 
 
-def _make_lists_equal_length(list_1, list_2):
-    length_1 = len(list_1)
-    length_2 = len(list_2)
-
-    if length_1 != length_2:
-        max_len = max(length_1, length_2)
-
-        list_1 = _pad_left(list_1, max_len)
-        list_2 = _pad_left(list_2, max_len)
-
-
 def _make_whole_list_negative(a_list):
-    for x, value in enumerate(a_list):
-        if value > 0:
-            a_list[x] *= -1
-    return a_list
+    return [-x if x > 0 else x for x in a_list]
 
 
 def _check_if_negative(a_list):
     if a_list[0] < 0:
         a_list = _make_whole_list_negative(a_list)
     return a_list
-
-
-def _format_numbers(num_list_1, num_list_2):
-    num_list_1 = _check_if_negative(num_list_1)
-    num_list_2 = _check_if_negative(num_list_2)
-
-    _make_lists_equal_length(num_list_1, num_list_2)
 
 
 def add(num_list_1, num_list_2, base_list):
@@ -78,7 +57,18 @@ def add(num_list_1, num_list_2, base_list):
     It must be greater than or equal to the length of the two number lists
     """
 
-    _format_numbers(num_list_1, num_list_2)
+    # format numbers
+    num_list_1 = _check_if_negative(num_list_1)
+    num_list_2 = _check_if_negative(num_list_2)
+
+    length_1 = len(num_list_1)
+    length_2 = len(num_list_2)
+
+    if length_1 != length_2:
+        max_len = max(length_1, length_2)
+
+        num_list_1 = _pad_left(num_list_1, max_len)
+        num_list_2 = _pad_left(num_list_2, max_len)
 
     return clean_up_bases([x + y for x, y in zip(num_list_1, num_list_2)], base_list)
 
@@ -91,7 +81,18 @@ def subtract(num_list_1, num_list_2, base_list):
     It must be greater than or equal to the length of the two number lists
     """
 
-    _format_numbers(num_list_1, num_list_2)
+    # format numbers
+    num_list_1 = _check_if_negative(num_list_1)
+    num_list_2 = _check_if_negative(num_list_2)
+
+    length_1 = len(num_list_1)
+    length_2 = len(num_list_2)
+
+    if length_1 != length_2:
+        max_len = max(length_1, length_2)
+
+        num_list_1 = _pad_left(num_list_1, max_len)
+        num_list_2 = _pad_left(num_list_2, max_len)
 
     comparison = _compare_numbers_represented_as_arrays(num_list_1, num_list_2)
 
