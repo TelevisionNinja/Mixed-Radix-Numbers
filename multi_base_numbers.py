@@ -57,31 +57,15 @@ def _make_whole_list_negative(a_list):
     return a_list
 
 
-def _make_whole_list_positive(a_list):
-    for x, value in enumerate(a_list):
-        if value < 0:
-            a_list[x] *= -1
-    return a_list
-
-
 def _check_if_negative(a_list):
-    for x in a_list:
-        if x > 0:
-            return False
-    else:
-        a_list = _make_whole_list_positive(a_list)
-    return True
-
-
-def _check_if_regular_negative(a_list):
     if a_list[0] < 0:
         a_list = _make_whole_list_negative(a_list)
     return a_list
 
 
 def _format_numbers(num_list_1, num_list_2):
-    num_list_1 = _check_if_regular_negative(num_list_1)
-    num_list_2 = _check_if_regular_negative(num_list_2)
+    num_list_1 = _check_if_negative(num_list_1)
+    num_list_2 = _check_if_negative(num_list_2)
 
     _make_lists_equal_length(num_list_1, num_list_2)
 
@@ -124,18 +108,16 @@ def subtract(num_list_1, num_list_2, base_list):
 
 def clean_up_bases(a_list, base_list):
     """
-    This "cleans up" the result of the addition or subtraction to give the right asnwer to the operation
+    This "cleans up" the result of the addition or subtraction to give the right answer to the operation
 
     Since there is a chance the list of bases is not long enough to include a base for the carry,
     like -99 - 1 = -100 where the list of bases may be [10, 10],
     this function tries to correct the carry by extending the list of bases using the most significant base
     
-    the list of bases must be greater than or equal to the length of the list of values
+    The list of bases must be greater than or equal to the length of the list of values
     """
-    a_list = clean_up_bases_ignore_most_significant_digit(a_list, base_list)
 
-    # test for length
-    # this deals with the most significant digit if the positive or negative value of it is greater than or euqal to the base
+    a_list = clean_up_bases_ignore_most_significant_digit(a_list, base_list)
 
     if len(a_list) > len(base_list):
         while abs(a_list[0]) >= base_list[0]:
@@ -155,7 +137,7 @@ def clean_up_bases(a_list, base_list):
 
 def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     """
-    This "cleans up" the result of the addition or subtraction to give the right asnwer to the operation
+    This "cleans up" the result of the addition or subtraction to give the right answer to the operation
 
     Since there is a chance the list of bases is not long enough to include a base for the carry,
     like -99 - 1 = -100 where the list of bases may be [10, 10],
@@ -167,9 +149,6 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     # remove leading zeros
     if a_list[0] == 0:
         a_list = _remove_leading_element(a_list)
-
-    # check if it's a negative number and correctly format it
-    negative_flag = _check_if_negative(a_list)
 
     a_list.reverse()
     base_list.reverse()
@@ -200,9 +179,6 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     # removing leading zeros
     if a_list[0] == 0:
         a_list = _remove_leading_element(a_list)
-
-    if negative_flag:
-        a_list[0] *= -1
 
     return a_list
 
