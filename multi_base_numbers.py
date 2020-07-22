@@ -1,6 +1,10 @@
-def _pad_left(a_list, padding_element, length):
+def _pad_left(a_list, length):
+    """
+    pad zeros to the left of a list
+    """
     for _ in range(length - len(a_list)):
-        a_list.insert(0, padding_element)
+        a_list.insert(0, 0)
+    return a_list
 
 
 def _remove_leading_element(a_list):
@@ -41,34 +45,43 @@ def _make_lists_equal_length(list_1, list_2):
     if length_1 != length_2:
         max_len = max(length_1, length_2)
 
-        _pad_left(list_1, 0, max_len)
-        _pad_left(list_2, 0, max_len)
+        list_1 = _pad_left(list_1, max_len)
+        list_2 = _pad_left(list_2, max_len)
 
 
 def _make_whole_list_negative(a_list):
-    for x in range(len(a_list)):
-        if a_list[x] > 0:
+    for x, value in enumerate(a_list):
+        if value > 0:
             a_list[x] *= -1
     return a_list
 
 
-def _format_into_regular_negative_number(a_list):
-    for x in range(len(a_list)):
-        if a_list[x] < 0:
+def _format_into_regular_negative(a_list):
+    for x, value in enumerate(a_list):
+        if value < 0:
             a_list[x] *= -1
     a_list[0] *= -1
     return a_list
 
 
 def _check_if_negative(a_list):
+    for x in a_list:
+        if x > 0:
+            break
+    else:
+        a_list = _format_into_regular_negative(a_list)
+    return a_list
+
+
+def _check_if_regular_negative(a_list):
     if a_list[0] < 0:
         a_list = _make_whole_list_negative(a_list)
     return a_list
 
 
 def _format_numbers(num_list_1, num_list_2):
-    num_list_1 = _check_if_negative(num_list_1)
-    num_list_2 = _check_if_negative(num_list_2)
+    num_list_1 = _check_if_regular_negative(num_list_1)
+    num_list_2 = _check_if_regular_negative(num_list_2)
     
     _make_lists_equal_length(num_list_1, num_list_2)
 
@@ -156,11 +169,7 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
         a_list = _remove_leading_element(a_list)
 
     # check if it's a negative number and correctly format it
-    for x in a_list:
-        if x > 0:
-            break
-    else:
-        a_list = _format_into_regular_negative_number(a_list)
+    _check_if_negative(a_list)
 
     a_list.reverse()
     base_list.reverse()
