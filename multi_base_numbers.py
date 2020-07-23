@@ -9,14 +9,11 @@ def _pad_left(a_list, length):
 
 
 def _remove_leading_element(a_list):
-    while a_list[0] == 0:
-        del a_list[0]
+    for x, value in enumerate(a_list):
+        if value != 0:
+            return a_list[x:]
 
-        if not a_list:
-            a_list = [0]
-            break
-
-    return a_list
+    return [0]
 
 
 def _compare_numbers_represented_as_arrays(list_1, list_2):
@@ -39,13 +36,10 @@ def _compare_numbers_represented_as_arrays(list_1, list_2):
     return 0
 
 
-def _make_whole_list_negative(a_list):
-    return [-x if x > 0 else x for x in a_list]
-
-
 def _check_if_negative(a_list):
     if a_list[0] < 0:
-        a_list = _make_whole_list_negative(a_list)
+        # make the whole list negative
+        return [-x if x > 0 else x for x in a_list]
     return a_list
 
 
