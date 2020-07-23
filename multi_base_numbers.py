@@ -116,13 +116,11 @@ def clean_up_bases(a_list, base_list):
 
     if len(a_list) > len(base_list):
         while abs(a_list[0]) >= base_list[0]:
-            carry = 0
+            carry = a_list[0] // base_list[0]
 
             if a_list[0] < 0:
                 a_list[0] *= -1
                 carry = -(a_list[0] // base_list[0])
-            else:
-                carry = a_list[0] // base_list[0]
 
             a_list.insert(0, carry)
             a_list[1] = a_list[1] % base_list[0]
@@ -148,23 +146,24 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     a_list.reverse()
     base_list.reverse()
 
+    length = len(a_list) - 1
+
     for x, (value, base) in enumerate(zip(a_list, base_list)):
         if value >= base or value < 0:
-            carry = 0
+            carry = value // base # floor division is necessary
 
             if -value >= base:
                 value *= -1
                 carry = -(value // base)
-            else:
-                carry = value // base # floor division is necessary
 
-            if x < len(a_list) - 1:
+            if x < length:
                 a_list[x + 1] += carry
             else:
                 if value < base:
                     break
 
                 a_list.append(carry)
+                length += 1
 
             a_list[x] = value % base
 
