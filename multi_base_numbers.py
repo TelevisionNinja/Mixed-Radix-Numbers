@@ -101,7 +101,7 @@ def subtract(num_list_1, num_list_2, base_list):
 
     result = clean_up_bases([x - y for x, y in zip(num_list_1, num_list_2)], base_list)
 
-    if comparison == -1 and result[0] > 0:
+    if comparison == -1:
         result[0] *= -1
 
     return result
@@ -162,7 +162,7 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
                 value *= -1
                 carry = -(value // base)
             else:
-                carry = value // base
+                carry = value // base # floor division is necessary
 
             if x < len(a_list) - 1:
                 a_list[x + 1] += carry
