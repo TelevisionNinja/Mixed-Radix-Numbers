@@ -143,6 +143,16 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     if a_list[0] == 0:
         a_list = _remove_leading_element(a_list)
 
+    # check if it's a negative number and correctly format it
+    negative_flag = True
+
+    for x in a_list:
+        if x > 0:
+            negative_flag = False
+            break
+    else:
+        a_list = [-x for x in a_list]
+
     a_list.reverse()
     base_list.reverse()
 
@@ -173,6 +183,9 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     # removing leading zeros
     if a_list[0] == 0:
         a_list = _remove_leading_element(a_list)
+
+    if negative_flag:
+        a_list[0] *= -1
 
     return a_list
 
