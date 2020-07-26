@@ -115,15 +115,20 @@ def clean_up_bases(a_list, base_list):
     a_list = clean_up_bases_ignore_most_significant_digit(a_list, base_list)
 
     if len(a_list) > len(base_list):
-        while abs(a_list[0]) >= base_list[0]:
-            carry = a_list[0] // base_list[0]
+        base = base_list[0]
+        value = a_list[0]
 
-            if a_list[0] < 0:
+        while abs(value) >= base:
+            carry = value // base
+
+            if value < 0:
                 a_list[0] *= -1
-                carry = -(a_list[0] // base_list[0])
+                carry = -(value // base)
 
             a_list.insert(0, carry)
-            a_list[1] = a_list[1] % base_list[0]
+            a_list[1] %= base
+
+            value = a_list[0]
 
     return a_list
 
@@ -138,10 +143,6 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
 
     The list of bases must be greater than or equal to the length of the list of values
     """
-
-    # remove leading zeros
-    if a_list[0] == 0:
-        a_list = _remove_leading_element(a_list)
 
     # check if it's a negative number and correctly format it
     negative_flag = True
@@ -161,6 +162,7 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     for x, (value, base) in enumerate(zip(a_list, base_list)):
         if value >= base or value < 0:
             carry = value // base # floor division is necessary
+            a_list[x] %= base
 
             if -value >= base:
                 value *= -1
@@ -169,13 +171,8 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
             if x < length:
                 a_list[x + 1] += carry
             else:
-                if value < base:
-                    break
-
-                a_list.append(carry)
+                a_list += [carry]
                 length += 1
-
-            a_list[x] = value % base
 
     a_list.reverse()
     base_list.reverse()
