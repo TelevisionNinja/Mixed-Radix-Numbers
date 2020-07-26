@@ -162,11 +162,12 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     for x, (value, base) in enumerate(zip(a_list, base_list)):
         if value >= base or value < 0:
             carry = value // base # floor division is necessary
-            a_list[x] %= base
 
             if -value >= base:
                 value *= -1
                 carry = -(value // base)
+
+            a_list[x] = value % base
 
             if x < length:
                 a_list[x + 1] += carry
