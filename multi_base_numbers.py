@@ -36,10 +36,16 @@ def _compare_numbers_represented_as_arrays(list_1, list_2):
     return 0
 
 
-def _check_if_negative(a_list):
+def _format_list(a_list):
+    # remove leading zeros
+    if a_list[0] == 0:
+        a_list = _remove_leading_element(a_list)
+    
+    # check if the number is negative
     if a_list[0] < 0:
         # make the whole list negative
         return [-x if x > 0 else x for x in a_list]
+    
     return a_list
 
 
@@ -52,9 +58,10 @@ def add(num_list_1, num_list_2, base_list):
     """
 
     # format numbers
-    num_list_1 = _check_if_negative(num_list_1)
-    num_list_2 = _check_if_negative(num_list_2)
+    num_list_1 = _format_list(num_list_1)
+    num_list_2 = _format_list(num_list_2)
 
+    # make them equal length
     length_1 = len(num_list_1)
     length_2 = len(num_list_2)
 
@@ -76,9 +83,10 @@ def subtract(num_list_1, num_list_2, base_list):
     """
 
     # format numbers
-    num_list_1 = _check_if_negative(num_list_1)
-    num_list_2 = _check_if_negative(num_list_2)
+    num_list_1 = _format_list(num_list_1)
+    num_list_2 = _format_list(num_list_2)
 
+    # make them equal length
     length_1 = len(num_list_1)
     length_2 = len(num_list_2)
 
