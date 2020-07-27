@@ -16,7 +16,7 @@ def _remove_leading_element(a_list):
     return [0]
 
 
-def _compare_numbers_represented_as_arrays(list_1, list_2):
+def _compare_nums(num_lists):
     """
     compares two numbers that are represented as lists
 
@@ -27,29 +27,49 @@ def _compare_numbers_represented_as_arrays(list_1, list_2):
     -1 : list 2 is greater
     """
 
-    for value_1, value_2 in zip(list_1, list_2):
-        if value_2 > value_1:
+    for l in zip(*num_lists):
+        val_1 = l[0]
+        val_2 = sum(l[1:])
+
+        if val_2 > val_1:
             return -1
-        if value_1 > value_2:
+        if val_1 > val_2:
             return 1
 
     return 0
 
 
-def _format_list(a_list):
+def _format_list(num_lists):
+    nums = []
+    max_len = 0
+
+    for l in num_lists:
+        l = _format_num(l)
+        nums.append(l)
+        length = len(l)
+        if length > max_len:
+            max_len = length
+
+    for x, l in enumerate(nums):
+        nums[x] = _pad_left(l, max_len)
+
+    return nums
+
+
+def _format_num(a_list):
     # remove leading zeros
     if a_list[0] == 0:
         a_list = _remove_leading_element(a_list)
-    
+
     # check if the number is negative
     if a_list[0] < 0:
         # make the whole list negative
         return [-x if x > 0 else x for x in a_list]
-    
+
     return a_list
 
 
-def add(num_list_1, num_list_2, base_list):
+def add(base_list, *num_lists):
     """
     num_list_1 + num_list_2
 
@@ -57,24 +77,10 @@ def add(num_list_1, num_list_2, base_list):
     It must be greater than or equal to the length of the two number lists
     """
 
-    # format numbers
-    num_list_1 = _format_list(num_list_1)
-    num_list_2 = _format_list(num_list_2)
-
-    # make them equal length
-    length_1 = len(num_list_1)
-    length_2 = len(num_list_2)
-
-    if length_1 != length_2:
-        max_len = max(length_1, length_2)
-
-        num_list_1 = _pad_left(num_list_1, max_len)
-        num_list_2 = _pad_left(num_list_2, max_len)
-
-    return clean_up_bases([x + y for x, y in zip(num_list_1, num_list_2)], base_list)
+    return clean_up_bases(base_list, [sum(x) for x in zip(*_format_list(num_lists))])
 
 
-def subtract(num_list_1, num_list_2, base_list):
+def subtract(base_list, *num_lists):
     """
     num_list_1 - num_list_2
 
@@ -83,25 +89,21 @@ def subtract(num_list_1, num_list_2, base_list):
     """
 
     # format numbers
-    num_list_1 = _format_list(num_list_1)
-    num_list_2 = _format_list(num_list_2)
+    nums = _format_list(num_lists)
 
-    # make them equal length
-    length_1 = len(num_list_1)
-    length_2 = len(num_list_2)
+    # compare the 1st number against the rest
+    comparison = _compare_nums(nums)
 
-    if length_1 != length_2:
-        max_len = max(length_1, length_2)
+    values = []
 
-        num_list_1 = _pad_left(num_list_1, max_len)
-        num_list_2 = _pad_left(num_list_2, max_len)
+    if comparison == 1:
+        values = [l[0] - sum(l[1:]) for l in zip(*nums)]
+    elif comparison == -1:
+        values = [sum(l[1:]) - l[0] for l in zip(*nums)]
+    else:
+        return [0]
 
-    comparison = _compare_numbers_represented_as_arrays(num_list_1, num_list_2)
-
-    if comparison == -1:
-        num_list_1, num_list_2 = num_list_2, num_list_1
-
-    result = clean_up_bases([x - y for x, y in zip(num_list_1, num_list_2)], base_list)
+    result = clean_up_bases(base_list, values)
 
     if comparison == -1:
         result[0] *= -1
@@ -109,7 +111,7 @@ def subtract(num_list_1, num_list_2, base_list):
     return result
 
 
-def clean_up_bases(a_list, base_list):
+def clean_up_bases(base_list, a_list):
     """
     This "cleans up" the result of the addition or subtraction to give the right answer to the operation
 
@@ -118,9 +120,11 @@ def clean_up_bases(a_list, base_list):
     this function tries to correct the carry by extending the list of bases using the most significant base
     
     The list of bases must be greater than or equal to the length of the list of values
+
+    The list of values must not have leading zeros
     """
 
-    a_list = clean_up_bases_ignore_most_significant_digit(a_list, base_list)
+    a_list = clean_up_bases_ignore_most_significant_digit(base_list, a_list)
 
     if len(a_list) > len(base_list):
         base = base_list[0]
@@ -141,7 +145,7 @@ def clean_up_bases(a_list, base_list):
     return a_list
 
 
-def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
+def clean_up_bases_ignore_most_significant_digit(base_list, a_list):
     """
     This "cleans up" the result of the addition or subtraction to give the right answer to the operation
 
@@ -150,6 +154,8 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
     this function will not try to correct the carry or the -1 in the example
 
     The list of bases must be greater than or equal to the length of the list of values
+
+    The list of values must not have leading zeros
     """
 
     # check if it's a negative number and correctly format it
@@ -198,4 +204,4 @@ def clean_up_bases_ignore_most_significant_digit(a_list, base_list):
 
 if __name__ == "__main__":
     # here is an example
-    print(add([1, 20], [2, 41], [24, 60]))
+    print(add([24, 60], [1, 20], [2, 41]))
