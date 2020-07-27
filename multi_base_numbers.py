@@ -3,9 +3,7 @@ def _pad_left(a_list, length):
     pad zeros to the left of a list
     """
 
-    new_list = [0 for _ in range(length - len(a_list))]
-    new_list += a_list
-    return new_list
+    return [0 for _ in range(length - len(a_list))] + a_list
 
 
 def _remove_leading_element(a_list):
@@ -134,13 +132,13 @@ def clean_up_bases(base_list, a_list):
             carry = value // base
 
             if value < 0:
-                a_list[0] *= -1
+                value *= -1
                 carry = -(value // base)
 
             a_list.insert(0, carry)
             a_list[1] %= base
 
-            value = a_list[0]
+            value = carry
 
     return a_list
 
