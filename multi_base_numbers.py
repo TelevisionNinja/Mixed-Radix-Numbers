@@ -136,7 +136,7 @@ def clean_up_bases(base_list, a_list):
                 carry = -(value // base)
 
             a_list.insert(0, carry)
-            a_list[1] %= base
+            a_list[1] = value % base
 
             value = carry
 
