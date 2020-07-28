@@ -14,37 +14,23 @@ def _remove_leading_zeros(num):
     return [0]
 
 
-def _compare_nums(num_lists):
-    """
-    compares numbers that are represented as lists
-
-    both lists must be the same length
-
-    1 : list 1 is greater
-    0 : both are equal
-    -1 : list 2-n is greater
-    """
-
-    for values in zip(*num_lists):
-        val_1 = values[0]
-        val_2 = sum(values[1:])
-
-        if val_2 > val_1:
-            return -1
-        if val_1 > val_2:
-            return 1
-
-    return 0
-
-
 def _format_list(num_lists):
     nums = []
     max_len = 0
 
     for a_num in num_lists:
-        a_num = _format_num(a_num)
+        # remove leading zeros
+        if a_num[0] == 0:
+            a_num = _remove_leading_zeros(a_num)
+
+        # check if the number is negative
+        if a_num[0] < 0:
+            # make the whole list negative
+            a_num = [-x if x > 0 else x for x in a_num]
+
         nums.append(a_num)
         length = len(a_num)
+
         if length > max_len:
             max_len = length
 
@@ -52,19 +38,6 @@ def _format_list(num_lists):
         nums[x] = _pad_left(a_num, max_len)
 
     return nums
-
-
-def _format_num(num):
-    # remove leading zeros
-    if num[0] == 0:
-        num = _remove_leading_zeros(num)
-
-    # check if the number is negative
-    if num[0] < 0:
-        # make the whole list negative
-        return [-x if x > 0 else x for x in num]
-
-    return num
 
 
 def add(base_list, *num_lists):
@@ -86,27 +59,37 @@ def subtract(base_list, *num_lists):
     It must be greater than or equal to the length of the two number lists
     """
 
-    # format numbers
-    nums = _format_list(num_lists)
+    comparison = 0
+    check = True
+
+    greater_than = []
+    less_than = []
 
     # compare the 1st number against the rest
-    comparison = _compare_nums(nums)
+    for values in zip(*_format_list(num_lists)):
+        val_1 = values[0]
+        val_2 = sum(values[1:])
 
-    result = []
+        greater_than += [val_1 - val_2]
+        less_than += [val_2 - val_1]
+
+        if check:
+            if val_1 > val_2:
+                comparison = 1
+                check = False
+            elif val_2 > val_1:
+                comparison = -1
+                check = False
 
     if comparison == 1:
-        result = [values[0] - sum(values[1:]) for values in zip(*nums)]
-    elif comparison == -1:
-        result = [sum(values[1:]) - values[0] for values in zip(*nums)]
-    else:
-        return [0]
-
-    result = clean_up_bases(base_list, result)
+        return clean_up_bases(base_list, greater_than)
 
     if comparison == -1:
+        result = clean_up_bases(base_list, less_than)
         result[0] *= -1
+        return result
 
-    return result
+    return [0]
 
 
 def clean_up_bases(base_list, value_list):
