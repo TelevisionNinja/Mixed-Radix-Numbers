@@ -153,7 +153,7 @@ def clean_up_num(base_list, num):
 
     num = clean_up_num_ignore_most_significant_digit(base_list, num)
 
-    if len(num) > len(num):
+    if len(num) > len(base_list):
         base = base_list[0]
         value = num[0]
 
