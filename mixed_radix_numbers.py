@@ -46,9 +46,12 @@ def _format_num_lists(base_list, num_lists):
     return [a_num + [0 for _ in range(max_len - len(a_num))] for a_num in nums]
 
 
-def add(handle_most_sig_fig, base_list, *num_lists):
+def add(handle_most_sig_fig, base_list, num_lists):
     """
-    num_list_1 + num_list_2 + num_list_3 + ...
+    Result: num_list_1 + num_list_2 + num_list_3 + ... + num_list_n
+
+    num_lists is a list of the numbers to be added
+    The numbers themselve are lists of values
 
     base_list is a list of the bases of the 2 numbers this function is supposed to work with
     The base list is aligned with the given numbers by the least significant digit
@@ -65,9 +68,12 @@ def add(handle_most_sig_fig, base_list, *num_lists):
     return _clean_up_bases(handle_most_sig_fig, base_list, [sum(x) for x in zip(*_format_num_lists(base_list, num_lists))])
 
 
-def subtract(handle_most_sig_fig, base_list, *num_lists):
+def subtract(handle_most_sig_fig, base_list, num_lists):
     """
-    num_list_1 - num_list_2 - num_list_3 - ...
+    Result: num_list_1 - num_list_2 - num_list_3 - ... - num_list_n
+
+    num_lists is a list of the numbers to be subtracted
+    The numbers themselve are lists of values
 
     base_list is a list of the bases of the 2 numbers this function is supposed to work with
     The base list is aligned with the given numbers by the least significant digit
@@ -163,4 +169,4 @@ if __name__ == "__main__":
     The numbers, or time in this case, that I want to add together is 1:20 + 2 hours and 41 minutes
     '''
 
-    print(add(False, [24, 60], [1, 20], [2, 41]))
+    print(add(False, [24, 60], [[1, 20], [2, 41]]))
