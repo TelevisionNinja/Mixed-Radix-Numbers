@@ -10,10 +10,11 @@ def _format_num_lists(base_list, num_lists):
                     a_num = [-x if x > 0 else x for x in a_num]
                 break
 
+        # reverse the number
+        a_num = a_num[::-1]
+
         # clean up numbers
         length = len(a_num) - 1
-
-        a_num = a_num[::-1]
 
         for x, (value, base) in enumerate(zip(a_num, base_list)):
             if abs(value) >= base:
@@ -41,43 +42,55 @@ def _format_num_lists(base_list, num_lists):
         if length > max_len:
             max_len = length
 
-    # add leading zeros so that all numbers are equal length
+    # add trailing zeros so that all numbers are equal length
     return [a_num + [0 for _ in range(max_len - len(a_num))] for a_num in nums]
 
 
-def add(clean_up_most_sig_fig, base_list, *num_lists):
+def add(handle_most_sig_fig, base_list, *num_lists):
     """
-    num_list_1 + num_list_2
+    num_list_1 + num_list_2 + num_list_3 + ...
 
     base_list is a list of the bases of the 2 numbers this function is supposed to work with
+    The base list is aligned with the given numbers by the least significant digit
     It must be greater than or equal to the length of the two number lists
+
+    Since the most significant digit can be outside the scope of the base list,
+    handle_most_sig_fig is a boolean for whether or not the function should do any arithmetic on it
+    Set it to true to treat it as if its base is the same as the most significant base in the base list
+    Setting it to false will just leave the value appened to the front of the result
     """
 
     base_list = base_list[::-1]
 
-    return _clean_up_bases(clean_up_most_sig_fig, base_list, [sum(x) for x in zip(*_format_num_lists(base_list, num_lists))])
+    return _clean_up_bases(handle_most_sig_fig, base_list, [sum(x) for x in zip(*_format_num_lists(base_list, num_lists))])
 
 
-def subtract(clean_up_most_sig_fig, base_list, *num_lists):
+def subtract(handle_most_sig_fig, base_list, *num_lists):
     """
-    num_list_1 - num_list_2
+    num_list_1 - num_list_2 - num_list_3 - ...
 
     base_list is a list of the bases of the 2 numbers this function is supposed to work with
+    The base list is aligned with the given numbers by the least significant digit
     It must be greater than or equal to the length of the two number lists
+
+    Since the most significant digit can be outside the scope of the base list,
+    handle_most_sig_fig is a boolean for whether or not the function should do any arithmetic on it
+    Set it to true to treat it as if its base is the same as the most significant base in the base list
+    Setting it to false will just leave the value appened to the front of the result
     """
 
     base_list = base_list[::-1]
 
-    return _clean_up_bases(clean_up_most_sig_fig, base_list, [x[0] - sum(x[1:]) for x in zip(*_format_num_lists(base_list, num_lists))])
+    return _clean_up_bases(handle_most_sig_fig, base_list, [x[0] - sum(x[1:]) for x in zip(*_format_num_lists(base_list, num_lists))])
 
 
-def _clean_up_bases(clean_up_most_sig_fig, base_list, value_list):
+def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
     """
     This "cleans up" the result of the addition or subtraction to give the right answer to the operation
 
     Since there is a chance the list of bases is not long enough to include a base for the carry,
     like -99 - 1 = -100 where the list of bases may be [10, 10],
-    this function may or may not try to correct the carry or the -1 in the example depending on clean_up_most_sig_fig
+    this function may or may not try to correct the carry or the -1 in the example depending on the boolean handle_most_sig_fig
 
     The list of bases must be greater than or equal to the length of the list of values
 
@@ -119,8 +132,8 @@ def _clean_up_bases(clean_up_most_sig_fig, base_list, value_list):
     else:
         value_list = [0]
 
-    # This section of code tries to correct the carry by extending the list of bases using the most significant base
-    if clean_up_most_sig_fig and length + 1 > len(base_list):
+    # This section of code tries to correct the carry by using the most significant base
+    if handle_most_sig_fig and length + 1 > len(base_list):
         base = base_list[-1]
         value = value_list[0]
 
@@ -140,5 +153,14 @@ def _clean_up_bases(clean_up_most_sig_fig, base_list, value_list):
 
 
 if __name__ == "__main__":
-    # here is an example
+    '''
+    Here is an example
+
+    Since I don't care if there is a carry or not, I set the handle_most_sig_fig to False
+
+    The list of bases is [24, 60] for 24 hour time
+
+    The numbers, or time in this case, that I want to add together is 1:20 + 2 hours and 41 minutes
+    '''
+
     print(add(False, [24, 60], [1, 20], [2, 41]))
