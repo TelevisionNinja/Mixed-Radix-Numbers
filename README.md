@@ -1,5 +1,5 @@
-# Multi-Base-Numbers
-A little module for working with multi base numbers like time.
+# Mixed-Radix-Numbers
+A little module for doing arithmetic with mixed radix numbers like time.
 
 An example would be 1:20 + 2 hours and 41 mins = 4:01 or how it is represented in the code, [1, 20] + [2, 41] = [4, 1]. This module can also handle numbers greater than the given base. For example, 9,000 minutes + 1 hour and 20 minutes = 6 days, 7 hours, and 20 minutes. Even though 9,000 is beyond base 60, you can just add the lists [9000] and [1, 20] together and still get the correct result, [6, 7, 20].
 
