@@ -1,8 +1,7 @@
 def _format_num_lists(base_list, num_lists):
-    nums = []
     max_len = 0
 
-    for a_num in num_lists:
+    for y, a_num in enumerate(num_lists):
         # ignore leading zeros and format negative numbers
         for x in a_num:
             if x != 0:
@@ -14,11 +13,12 @@ def _format_num_lists(base_list, num_lists):
         a_num = a_num[::-1]
 
         # clean up numbers
-        length = len(a_num) - 1
+        length = len(a_num)
 
         for x, (value, base) in enumerate(zip(a_num, base_list)):
             if abs(value) >= base:
                 is_negative = False
+
                 if value < 0:
                     value *= -1
                     is_negative = True
@@ -30,20 +30,21 @@ def _format_num_lists(base_list, num_lists):
                     a_num[x] *= -1
                     carry *= -1
 
+                x += 1
+
                 if x < length:
-                    a_num[x + 1] += carry
+                    a_num[x] += carry
                 else:
                     a_num += [carry]
                     length += 1
 
-        nums.append(a_num)
-        length += 1
+        num_lists[y] = a_num
 
         if length > max_len:
             max_len = length
 
     # add trailing zeros so that all numbers are equal length
-    return [a_num + [0 for _ in range(max_len - len(a_num))] for a_num in nums]
+    return [a_num + [0 for _ in range(max_len - len(a_num))] for a_num in num_lists]
 
 
 def add(handle_most_sig_fig, base_list, num_lists):
@@ -113,18 +114,16 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
                 value_list = [-x for x in value_list]
             break
 
-    length = len(value_list) - 1
-
     for x, (value, base) in enumerate(zip(value_list, base_list)):
         if value >= base or value < 0:
-            carry = value // base  # floor division
             value_list[x] = value % base
 
-            if x < length:
-                value_list[x + 1] += carry
+            x += 1
+
+            if x < len(value_list):
+                value_list[x] += value // base # floor division
             else:
-                value_list += [carry]
-                length += 1
+                value_list += [value // base]
 
     value_list.reverse()
 
@@ -139,7 +138,7 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
         value_list = [0]
 
     # This section of code tries to correct the carry by using the most significant base
-    if handle_most_sig_fig and length + 1 > len(base_list):
+    if handle_most_sig_fig and len(value_list) > len(base_list):
         base = base_list[-1]
         value = value_list[0]
 
@@ -152,7 +151,6 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
 
             value_list[0] = value % base
             value_list.insert(0, carry)
-
             value = carry
 
     return value_list
