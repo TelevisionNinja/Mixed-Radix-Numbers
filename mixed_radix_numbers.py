@@ -196,7 +196,7 @@ if __name__ == "__main__":
     '''
     Here is an example of how to use add()
 
-    Since I don't care if there is a carry or not, I set the handle_most_sig_fig to False
+    Since I don't care if there is a carry or not, I set handle_most_sig_fig to False
 
     The list of bases is [24, 60] for 24 hour time
 
