@@ -158,7 +158,7 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
 
 if __name__ == "__main__":
     '''
-    This module is for numbers that are or are not within the provided bases
+    This module is for numbers that are or are not within the provided bases and may or may not have leading zeros
     An example is [9000]. The value is greater the given bases, 24 and 60
 
     Here is an example of how to use add()
