@@ -1,4 +1,10 @@
 def _format_num_lists(base_list, num_lists):
+    """
+    This function assumes that the numbers may not within the provided bases and may have leading zeros
+
+    An example is [9000]. The value is greater the given bases [24, 60]
+    """
+
     max_len = 0
     nums = []
 
@@ -45,6 +51,33 @@ def _format_num_lists(base_list, num_lists):
 
     # add trailing zeros so that all numbers are equal length
     return [a_num + [0 for _ in range(max_len - len(a_num))] if len(a_num) < max_len else a_num for a_num in nums]
+
+
+def _format_num_lists_already_formatted(num_lists):
+    """
+    This function assumes that the numbers are already within the given bases and do not have leading zeros, or "already formated"
+
+    An example is [1, 20]. All the values are less than the given bases, 24 and 60
+
+    Replace any use of _format_num_lists() with this function if you know that you're only going to be dealing with already formatted numbers
+    """
+
+    max_len = 0
+
+    for y, a_num in enumerate(num_lists):
+        # format negative numbers
+        if a_num[0] < 0:
+            num_lists[y] = [-x if x > 0 else x for x in reversed(a_num)]
+        else:
+            num_lists[y] = a_num[::-1]
+
+        length = len(a_num)
+
+        if length > max_len:
+            max_len = length
+
+    # add trailing zeros so that all numbers are equal length
+    return [a_num + [0 for _ in range(max_len - len(a_num))] if len(a_num) < max_len else a_num for a_num in num_lists]
 
 
 def add(handle_most_sig_fig, base_list, num_lists):
@@ -158,9 +191,6 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
 
 if __name__ == "__main__":
     '''
-    This module is for numbers that are or are not within the provided bases and may or may not have leading zeros
-    An example is [9000]. The value is greater the given bases, 24 and 60
-
     Here is an example of how to use add()
 
     Since I don't care if there is a carry or not, I set the handle_most_sig_fig to False
