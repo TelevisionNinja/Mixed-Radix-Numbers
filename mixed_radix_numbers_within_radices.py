@@ -2,13 +2,11 @@ def _format_num_lists(num_lists):
     max_len = 0
 
     for y, a_num in enumerate(num_lists):
-        # ignore leading zeros and format negative numbers
+        # format negative numbers
         if a_num[0] < 0:
             num_lists[y] = [-x if x > 0 else x for x in reversed(a_num)]
         else:
-            # reverse the number
-            a_num.reverse()
-            num_lists[y] = a_num
+            num_lists[y] = a_num[::-1]
 
         length = len(a_num)
 
@@ -126,7 +124,7 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
 
 if __name__ == "__main__":
     '''
-    This module is for numbers that are already within the provided bases
+    This module is for numbers that are already within the provided bases and do not have leading zeros
     An example is [1, 20]. All the values are less than the given bases, 24 and 60
 
     Here is an example of how to use add()
