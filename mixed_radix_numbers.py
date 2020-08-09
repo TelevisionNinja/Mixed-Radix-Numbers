@@ -58,7 +58,7 @@ def _format_num_lists_already_formatted(num_lists):
     """
     This function assumes that the numbers are already within the given bases and do not have leading zeros, or "already formated"
 
-    An example is [1, 20]. All the values are less than the given bases, 24 and 60
+    An example is [1, 20]. All the values are less than the given bases [24, 60]
 
     Replace any use of _format_num_lists() with this function if you know that you're only going to be dealing with already formatted numbers
     """
