@@ -1,4 +1,4 @@
-def _format_num_lists_already_formatted(num_lists):
+def _format_num_lists(num_lists):
     """
     This function assumes that the numbers are already within the given bases and do not have leading zeros, or "already formated"
 
