@@ -18,7 +18,7 @@ def _format_num_lists(base_list, num_lists):
                     a_num = a_num[::-1]
                 break
 
-        # clean up numbers
+        # format numbers
         length = len(a_num)
 
         for x, (value, base) in enumerate(zip(a_num, base_list)):
@@ -46,6 +46,7 @@ def _format_num_lists(base_list, num_lists):
 
         nums.append(a_num)
 
+        # find length of longest num
         if length > max_len:
             max_len = length
 
@@ -73,6 +74,7 @@ def _format_num_lists_already_formatted(num_lists):
 
         length = len(a_num)
 
+        # find length of longest num
         if length > max_len:
             max_len = length
 
@@ -147,6 +149,7 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
                 value_list = [-x for x in value_list]
             break
 
+    # compute correct result
     for x, (value, base) in enumerate(zip(value_list, base_list)):
         if value >= base or value < 0:
             value_list[x] = value % base
