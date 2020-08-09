@@ -1,4 +1,10 @@
-def _format_num_lists(num_lists):
+def _format_num_lists_already_formatted(num_lists):
+    """
+    This function assumes that the numbers are already within the given bases and do not have leading zeros, or "already formated"
+
+    An example is [1, 20]. All the values are less than the given bases, 24 and 60
+    """
+
     max_len = 0
 
     for y, a_num in enumerate(num_lists):
@@ -124,7 +130,7 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
 
 if __name__ == "__main__":
     '''
-    This module is for numbers that are already within the provided bases and do not have leading zeros
+    This module is for numbers that are already within the provided bases and do not have leading zeros, or "already formated"
     An example is [1, 20]. All the values are less than the given bases, 24 and 60
 
     Here is an example of how to use add()
