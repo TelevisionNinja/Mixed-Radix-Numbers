@@ -1,16 +1,16 @@
 def _format_num_lists(base_list, num_lists):
     max_len = 0
+    nums = []
 
-    for y, a_num in enumerate(num_lists):
+    for a_num in num_lists:
         # ignore leading zeros and format negative numbers
         for x in a_num:
             if x != 0:
                 if x < 0:
-                    a_num = [-x if x > 0 else x for x in a_num]
+                    a_num = [-x if x > 0 else x for x in reversed(a_num)]
+                else:
+                    a_num = a_num[::-1]
                 break
-
-        # reverse the number
-        a_num = a_num[::-1]
 
         # clean up numbers
         length = len(a_num)
@@ -38,13 +38,13 @@ def _format_num_lists(base_list, num_lists):
                     a_num += [carry]
                     length += 1
 
-        num_lists[y] = a_num
+        nums.append(a_num)
 
         if length > max_len:
             max_len = length
 
     # add trailing zeros so that all numbers are equal length
-    return [a_num + [0 for _ in range(max_len - len(a_num))] for a_num in num_lists]
+    return [a_num + [0 for _ in range(max_len - len(a_num))] if len(a_num) < max_len else a_num for a_num in nums]
 
 
 def add(handle_most_sig_fig, base_list, num_lists):
@@ -158,7 +158,10 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
 
 if __name__ == "__main__":
     '''
-    Here is an example
+    This module is for numbers that are or are not within the provided bases
+    An example is [9000]. The value is greater the given bases, 24 and 60
+
+    Here is an example of how to use add()
 
     Since I don't care if there is a carry or not, I set the handle_most_sig_fig to False
 
