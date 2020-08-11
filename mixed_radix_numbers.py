@@ -46,7 +46,7 @@ def _format_num_lists(base_list, num_lists):
 
         nums.append(a_num)
 
-        # find length of longest num
+        # find length of the longest number
         if length > max_len:
             max_len = length
 
@@ -140,16 +140,16 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
     """
 
     # check if it's a negative number and format it
-    negative_flag = False
+    is_negative = False
 
     for x in reversed(value_list):
-        if x != 0:
+        if x != 0: # ignore leading zeros
             if x < 0:
-                negative_flag = True
+                is_negative = True
                 value_list = [-x for x in value_list]
             break
 
-    # compute correct result
+    # compute the carries to get the correct result
     for x, (value, base) in enumerate(zip(value_list, base_list)):
         if value >= base or value < 0:
             value_list[x] = value % base
@@ -166,7 +166,7 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
     # removing leading zeros
     for x, value in enumerate(value_list):
         if value != 0:
-            if negative_flag:
+            if is_negative:
                 value_list[x] *= -1
             value_list = value_list[x:]
             break
@@ -194,13 +194,15 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
 
 if __name__ == "__main__":
     '''
-    Here is an example of how to use add()
+    Here is an example of how to use add() and subtract()
 
     Since I don't care if there is a carry or not, I set handle_most_sig_fig to False
 
     The list of bases is [24, 60] for 24 hour time
 
     The numbers, or time in this case, that I want to add together is 1:20 + 2 hours and 41 minutes
+    and the numbers I want to subtract is 4:01 - 2 hours and 41 minutes
     '''
 
     print(add(False, [24, 60], [[1, 20], [2, 41]]))
+    print(subtract(False, [24, 60], [[4, 1], [2, 41]]))
