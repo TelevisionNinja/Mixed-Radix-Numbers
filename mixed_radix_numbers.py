@@ -2,7 +2,7 @@ def _format_num_lists(base_list, num_lists):
     """
     This function assumes that the numbers may not within the provided bases and may have leading zeros
 
-    An example is [9000]. The value is greater the given bases [24, 60]
+    An example is [9000]. The value "9000" is greater than any of the given bases [24, 60] for 24 hour time
     """
 
     max_len = 0
@@ -58,7 +58,7 @@ def _format_num_lists_already_formatted(num_lists):
     """
     This function assumes that the numbers are already within the given bases and do not have leading zeros, or "already formated"
 
-    An example is [1, 20]. All the values are less than the given bases [24, 60]
+    An example is [1, 20]. All the values, "1" and "20", are less than the given bases [24, 60] for 24 hour time
 
     Replace any use of _format_num_lists() with this function if you know that you're only going to be dealing with already formatted numbers
     """
@@ -87,9 +87,11 @@ def _format_num_lists_already_formatted(num_lists):
 def add(handle_most_sig_fig, base_list, num_lists):
     """
     Result: num_list_1 + num_list_2 + num_list_3 + ... + num_list_n
+    This function returns a list representation of the number
+    Ex: [2, 4] or [-2, 4] for negative answers
 
     num_lists is a list of the numbers to be added
-    The numbers themselve are lists of values
+    The numbers themselves are lists of values
 
     base_list is a list of the bases of the 2 numbers this function is supposed to work with
     The base list is aligned with the given numbers by the least significant digit
@@ -109,9 +111,11 @@ def add(handle_most_sig_fig, base_list, num_lists):
 def subtract(handle_most_sig_fig, base_list, num_lists):
     """
     Result: num_list_1 - num_list_2 - num_list_3 - ... - num_list_n
+    This function returns a list representation of the number
+    Ex: [2, 4] or [-2, 4] for negative answers
 
     num_lists is a list of the numbers to be subtracted
-    The numbers themselve are lists of values
+    The numbers themselves are lists of values
 
     base_list is a list of the bases of the 2 numbers this function is supposed to work with
     The base list is aligned with the given numbers by the least significant digit
