@@ -16,13 +16,14 @@ def _format_num_lists(base_list, num_lists):
         for value in a_num:
             if value != 0: # ignore leading zeros
                 if value < 0:
-                    a_num[x] *= -1
+                    a_num = a_num[:x:-1] + [-a_num[x]]
                     is_negative = True
+                else:
+                    a_num = a_num[::-1]
                 break
             x += 1
 
         # format numbers
-        a_num = a_num[::-1]
         length = len(a_num)
         x = 0
 
@@ -68,8 +69,7 @@ def _format_num_lists_already_formatted(num_lists):
     for a_num in num_lists:
         # format negative numbers
         if a_num[0] < 0:
-            a_num[0] *= -1
-            num_lists[x] = [-value for value in reversed(a_num)]
+            num_lists[x] = a_num[:0:-1] + [-a_num[0]]
         else:
             num_lists[x] = a_num[::-1]
 
