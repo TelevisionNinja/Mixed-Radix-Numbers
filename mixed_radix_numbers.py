@@ -6,52 +6,51 @@ def _format_num_lists(base_list, num_lists):
     """
 
     max_len = 0
-    nums = []
+    y = 0
 
     for a_num in num_lists:
-        # ignore leading zeros and format negative numbers
-        for x in a_num:
-            if x != 0:
-                if x < 0:
-                    a_num = [-x if x > 0 else x for x in reversed(a_num)]
-                else:
-                    a_num = a_num[::-1]
+        # remove negative sign
+        is_negative = False
+        x = 0
+
+        for value in a_num:
+            if value != 0: # ignore leading zeros
+                if value < 0:
+                    a_num[x] *= -1
+                    is_negative = True
                 break
+            x += 1
 
         # format numbers
+        a_num = a_num[::-1]
         length = len(a_num)
+        x = 0
 
-        for x, (value, base) in enumerate(zip(a_num, base_list)):
-            if abs(value) >= base:
-                is_negative = False
-
-                if value < 0:
-                    value *= -1
-                    is_negative = True
-
-                carry = value // base
+        for value, base in zip(a_num, base_list):
+            if value >= base:
                 a_num[x] = value % base
 
-                if is_negative:
-                    a_num[x] *= -1
-                    carry *= -1
-
-                x += 1
-
-                if x < length:
-                    a_num[x] += carry
+                if x + 1 < length:
+                    a_num[x + 1] += value // base
                 else:
-                    a_num += [carry]
+                    a_num += [value // base]
                     length += 1
+            x += 1
 
-        nums.append(a_num)
+        # format negative numbers
+        if is_negative:
+            num_lists[y] = [-value for value in a_num]
+        else:
+            num_lists[y] = a_num
+
+        y += 1
 
         # find length of the longest number
         if length > max_len:
             max_len = length
 
     # add trailing zeros so that all numbers are equal length
-    return [a_num + [0 for _ in range(max_len - len(a_num))] if len(a_num) < max_len else a_num for a_num in nums]
+    return [a_num + (max_len - len(a_num)) * [0] if len(a_num) < max_len else a_num for a_num in num_lists]
 
 
 def _format_num_lists_already_formatted(num_lists):
@@ -64,22 +63,25 @@ def _format_num_lists_already_formatted(num_lists):
     """
 
     max_len = 0
+    x = 0
 
-    for y, a_num in enumerate(num_lists):
+    for a_num in num_lists:
         # format negative numbers
         if a_num[0] < 0:
-            num_lists[y] = [-x if x > 0 else x for x in reversed(a_num)]
+            a_num[0] *= -1
+            num_lists[x] = [-value for value in reversed(a_num)]
         else:
-            num_lists[y] = a_num[::-1]
+            num_lists[x] = a_num[::-1]
 
+        x += 1
+        # find length of longest num
         length = len(a_num)
 
-        # find length of longest num
         if length > max_len:
             max_len = length
 
     # add trailing zeros so that all numbers are equal length
-    return [a_num + [0 for _ in range(max_len - len(a_num))] if len(a_num) < max_len else a_num for a_num in num_lists]
+    return [a_num + (max_len - len(a_num)) * [0] if len(a_num) < max_len else a_num for a_num in num_lists]
 
 
 def add(handle_most_sig_fig, base_list, num_lists):
@@ -135,41 +137,41 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
     this function may or may not try to correct the carry or the -1 in the example depending on the boolean handle_most_sig_fig
 
     The list of bases must be greater than or equal to the length of the list of values
-
-    The list of values must not have leading zeros
     """
 
     # check if it's a negative number and format it
     is_negative = False
 
-    for x in reversed(value_list):
-        if x != 0: # ignore leading zeros
-            if x < 0:
+    for value in reversed(value_list):
+        if value != 0: # ignore leading zeros
+            if value < 0:
                 is_negative = True
-                value_list = [-x for x in value_list]
+                value_list = [-value for value in value_list]
             break
 
     # compute the carries to get the correct result
-    for x, (value, base) in enumerate(zip(value_list, base_list)):
+    x = 0
+
+    for value, base in zip(value_list, base_list):
         if value >= base or value < 0:
             value_list[x] = value % base
 
-            x += 1
-
-            if x < len(value_list):
-                value_list[x] += value // base # floor division
+            if x + 1 < len(value_list):
+                value_list[x + 1] += value // base # floor division
             else:
                 value_list += [value // base]
-
-    value_list.reverse()
+        x += 1
 
     # removing leading zeros
-    for x, value in enumerate(value_list):
+    value_list.reverse()
+    x = 0
+
+    for value in value_list:
         if value != 0:
-            if is_negative:
-                value_list[x] *= -1
-            value_list = value_list[x:]
+            if x != 0:
+                value_list = value_list[x:]
             break
+        x += 1
     else:
         value_list = [0]
 
@@ -178,16 +180,14 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
         base = base_list[-1]
         value = value_list[0]
 
-        while abs(value) >= base:
-            carry = value // base
-
-            if value < 0:
-                value *= -1
-                carry = -(value // base)
-
+        while value >= base:
             value_list[0] = value % base
-            value_list.insert(0, carry)
-            value = carry
+            value //= base
+            value_list.insert(0, value)
+
+    # add the negative sign
+    if is_negative:
+        value_list[0] *= -1
 
     return value_list
 
