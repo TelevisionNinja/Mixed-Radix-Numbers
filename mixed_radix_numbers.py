@@ -6,7 +6,7 @@ def _format_num_lists(base_list, num_lists):
     """
 
     max_len = 0
-    y = 0
+    nums = []
 
     for a_num in num_lists:
         # remove negative sign
@@ -21,37 +21,37 @@ def _format_num_lists(base_list, num_lists):
                 else:
                     a_num = a_num[::-1]
                 break
-            x += 1
+            x = x + 1
 
         # format numbers
-        length = len(a_num)
         x = 0
+        length = len(a_num)
 
         for value, base in zip(a_num, base_list):
             if value >= base:
                 a_num[x] = value % base
+                x = x + 1
 
-                if x + 1 < length:
-                    a_num[x + 1] += value // base
+                if x < length:
+                    a_num[x] = a_num[x] + value // base
                 else:
-                    a_num += [value // base]
-                    length += 1
-            x += 1
+                    a_num.append(value // base)
+                    length = length + 1
+            else:
+                x = x + 1
 
         # format negative numbers
         if is_negative:
-            num_lists[y] = [-value for value in a_num]
+            nums.append([-value for value in a_num])
         else:
-            num_lists[y] = a_num
-
-        y += 1
+            nums.append(a_num)
 
         # find length of the longest number
         if length > max_len:
             max_len = length
 
     # add trailing zeros so that all numbers are equal length
-    return [a_num + (max_len - len(a_num)) * [0] if len(a_num) < max_len else a_num for a_num in num_lists]
+    return [a_num + (max_len - len(a_num)) * [0] if len(a_num) < max_len else a_num for a_num in nums]
 
 
 def _format_num_lists_already_formatted(num_lists):
@@ -64,16 +64,15 @@ def _format_num_lists_already_formatted(num_lists):
     """
 
     max_len = 0
-    x = 0
+    nums = []
 
     for a_num in num_lists:
         # format negative numbers
         if a_num[0] < 0:
-            num_lists[x] = a_num[:0:-1] + [-a_num[0]]
+            nums.append(a_num[:0:-1] + [-a_num[0]])
         else:
-            num_lists[x] = a_num[::-1]
+            nums.append(a_num[::-1])
 
-        x += 1
         # find length of longest num
         length = len(a_num)
 
@@ -81,7 +80,7 @@ def _format_num_lists_already_formatted(num_lists):
             max_len = length
 
     # add trailing zeros so that all numbers are equal length
-    return [a_num + (max_len - len(a_num)) * [0] if len(a_num) < max_len else a_num for a_num in num_lists]
+    return [a_num + (max_len - len(a_num)) * [0] if len(a_num) < max_len else a_num for a_num in nums]
 
 
 def add(handle_most_sig_fig, base_list, num_lists):
@@ -145,13 +144,17 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
 
     # check if it's a negative number and format it
     is_negative = False
+    x = -1
+    length = len(value_list)
 
-    for value in reversed(value_list):
-        if value != 0: # ignore leading zeros
-            if value < 0:
+    while x >= -length:
+        val = value_list[x]
+        if val != 0:
+            if val < 0:
                 is_negative = True
                 value_list = [-value for value in value_list]
             break
+        x = x - 1
 
     # compute the carries to get the correct result
     x = 0
@@ -159,39 +162,43 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
     for value, base in zip(value_list, base_list):
         if value >= base or value < 0:
             value_list[x] = value % base
+            x = x + 1
 
-            if x + 1 < len(value_list):
-                value_list[x + 1] += value // base # floor division
+            if x < length:
+                value_list[x] = value_list[x] + value // base # floor division
             else:
-                value_list += [value // base]
-        x += 1
+                value_list.append(value // base)
+                length = length + 1
+        else:
+            x = x + 1
 
     # removing leading zeros
-    value_list.reverse()
-    x = 0
+    x = -1
 
-    for value in value_list:
-        if value != 0:
-            if x != 0:
-                value_list = value_list[x:]
+    while x >= -length:
+        if value_list[x] != 0:
+            if x != -1:
+                value_list = value_list[:x + 1]
             break
-        x += 1
+        x = x - 1
     else:
         value_list = [0]
 
     # This section of code tries to correct the carry by using the most significant base
-    if handle_most_sig_fig and len(value_list) > len(base_list):
+    if handle_most_sig_fig and length + x >= len(base_list):
         base = base_list[-1]
-        value = value_list[0]
+        value = value_list[-1]
 
         while value >= base:
-            value_list[0] = value % base
-            value //= base
-            value_list.insert(0, value)
+            value_list[-1] = value % base
+            value = value // base
+            value_list.append(value)
 
     # add the negative sign
     if is_negative:
-        value_list[0] *= -1
+        value_list[-1] = -value_list[-1]
+
+    value_list.reverse()
 
     return value_list
 
