@@ -69,7 +69,9 @@ def _format_num_lists_already_formatted(num_lists):
     for a_num in num_lists:
         # format negative numbers
         if a_num[0] < 0:
-            nums.append(a_num[:0:-1] + [-a_num[0]])
+            a_num = [-value for value in reversed(a_num)]
+            a_num[-1] = -a_num[-1]
+            nums.append(a_num)
         else:
             nums.append(a_num[::-1])
 
