@@ -11,17 +11,16 @@ def _format_num_lists(base_list, num_lists):
     for a_num in num_lists:
         # remove negative sign
         is_negative = False
-        x = 0
+        x = -1
 
         for value in a_num:
             if value != 0: # ignore leading zeros
+                a_num = a_num[::-1]
                 if value < 0:
-                    a_num = a_num[:x:-1] + [-a_num[x]]
                     is_negative = True
-                else:
-                    a_num = a_num[::-1]
+                    a_num[x] = -a_num[x]
                 break
-            x = x + 1
+            x = x - 1
 
         # format numbers
         x = 0
