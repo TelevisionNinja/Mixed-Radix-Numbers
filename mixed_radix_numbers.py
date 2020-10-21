@@ -22,7 +22,7 @@ def _format_num_lists(base_list, num_lists):
                 break
             x = x - 1
 
-        # format numbers
+        # compute carries for digits greater than the given bases
         x = 0
         length = len(a_num)
 
@@ -153,6 +153,8 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
         if val != 0:
             if val < 0:
                 is_negative = True
+                
+                # this changes the order of the subtraction to get the correct result
                 value_list = [-value for value in value_list]
             break
         x = x - 1
@@ -173,6 +175,8 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
         else:
             x = x + 1
 
+    # TODO add option to keep the result a certain length (don't remove leading zeros)
+
     # removing leading zeros
     x = -1
 
@@ -183,7 +187,7 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
             break
         x = x - 1
     else:
-        value_list = [0]
+        return [0]
 
     # This section of code tries to correct the carry by using the most significant base
     if handle_most_sig_fig and length + x >= len(base_list):
@@ -195,7 +199,7 @@ def _clean_up_bases(handle_most_sig_fig, base_list, value_list):
             value = value // base
             value_list.append(value)
 
-    # add the negative sign
+    # add the negative sign back in
     if is_negative:
         value_list[-1] = -value_list[-1]
 
